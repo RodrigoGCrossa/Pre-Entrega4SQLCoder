@@ -14,6 +14,7 @@ GROUP BY c.categoria_id, c.nombre
 HAVING SUM(v.cantidad) > 5
 ORDER BY ingreso_total DESC;
 
+
 -- 2. Clientes sin compras
 -- Esta consulta permite detectar clientes registrados que todavía no realizaron ninguna compra,
 -- información útil para campañas de activación o seguimiento comercial.
@@ -28,8 +29,9 @@ GROUP BY c.cliente_id, c.nombre
 HAVING COUNT(v.venta_id) = 0
 ORDER BY c.nombre;
 
+
 -- 3. Top de compras por cliente
--- Esta consulta permite conocer el producto que cada cliente compró en mayor cantidad
+-- Esta consulta permite conocer el producto que cada cliente compró más veces
 -- y la fecha de su última transacción, facilitando el análisis de preferencias y comportamiento de compra.
 SELECT
     c.nombre AS cliente,
@@ -40,7 +42,7 @@ SELECT
             ON v2.producto_id = p2.producto_id
         WHERE v2.cliente_id = c.cliente_id
         GROUP BY p2.producto_id, p2.nombre
-        ORDER BY SUM(v2.cantidad) DESC, p2.nombre
+        ORDER BY COUNT(v2.venta_id) DESC, p2.nombre
         LIMIT 1
     ) AS producto_mas_comprado,
     MAX(v.fecha_venta) AS ultima_transaccion
